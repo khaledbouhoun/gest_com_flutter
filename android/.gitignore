@@ -1,0 +1,22 @@
+# Gradle
+.gradle/
+**/.gradle/
+**/build/
+**/.cxx/
+
+# Gradle Wrapper
+# Keep gradle-wrapper.jar, gradlew and gradlew.bat tracked!
+
+# Android
+/captures/
+/local.properties
+
+# Flutter generated files
+GeneratedPluginRegistrant.java
+
+# Signing credentials (NEVER commit these)
+key.properties
+**/*.keystore
+**/*.jks
+
+

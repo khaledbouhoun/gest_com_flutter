@@ -1,0 +1,105 @@
+[
+  {
+    "file": "lib/view_models/auth_view_model.dart",
+    "routes": [
+      "/Categoesi_Color",
+      "/Gen_Settings",
+      "/Get_Buy_Settings",
+      "/get_caisse_settings",
+      "/get_categories",
+      "/get_folder_exercices",
+      "/get_natures",
+      "/get_rubriques",
+      "/get_sell_settings",
+      "/getuserandfolder",
+      "/verify_admin",
+      "/verify_standard"
+    ]
+  },
+  {
+    "file": "lib/view_models/client_view_model.dart",
+    "routes": [
+      "/client"
+    ]
+  },
+  {
+    "file": "lib/view_models/commande_entate_view_model.dart",
+    "routes": [
+      "/Save_Commande",
+      "/commande",
+      "/get_Site",
+      "/get_code_bon_commande",
+      "/get_journals",
+      "/save_commande_products",
+      "/update_added_commande_product"
+    ]
+  },
+  {
+    "file": "lib/view_models/facture_entate_view_model.dart",
+    "routes": [
+      "/Save_Facture",
+      "/facture",
+      "/get_Site",
+      "/get_code_bon",
+      "/get_journals",
+      "/save_facture_products",
+      "/update_added_product"
+    ]
+  },
+  {
+    "file": "lib/view_models/fournisseur_view_model.dart",
+    "routes": [
+      "/fournisseur"
+    ]
+  },
+  {
+    "file": "lib/view_models/product_view_model.dart",
+    "routes": [
+      "/get_product_details",
+      "/get_product_tarifs",
+      "/modify_product"
+    ]
+  },
+  {
+    "file": "lib/view_models/reception_detail_view_model.dart",
+    "routes": [
+      "/selected_reception"
+    ]
+  },
+  {
+    "file": "lib/view_models/reception_entate_view_model.dart",
+    "routes": [
+      "/Get_Code_Bon_Reception",
+      "/Get_Reception_Stock_Gnr_Achat",
+      "/Save_Reception",
+      "/Save_Reception_Products",
+      "/achat",
+      "/get_journals"
+    ]
+  },
+  {
+    "file": "lib/view_models/statistic_view_model.dart",
+    "routes": [
+      "/compare",
+      "/compare_by_month",
+      "/turnover_by_month",
+      "/turnover_by_product"
+    ]
+  },
+  {
+    "file": "lib/view_models/stock_view_model.dart",
+    "routes": [
+      "/add_product",
+      "/get_tarifs",
+      "/getstock",
+      "/statistic_products"
+    ]
+  },
+  {
+    "file": "lib/view_models/transaction_view_model.dart",
+    "routes": [
+      "/caisse",
+      "/comptes"
+    ]
+  }
+]
