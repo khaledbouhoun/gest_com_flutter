@@ -15,41 +15,28 @@ class ExerciceSelector extends StatelessWidget {
     this.functionType,
   });
 
-  void _onExerciceChanged(
-    BuildContext context,
-    AuthViewModel provider,
-    Exercice? exercice,
-  ) {
-    provider.selectedExercice = exercice;
-    provider.notifyListeners();
-
-    switch (functionType) {
-      case 'stock':
-        final vm = Provider.of<StockViewModel>(context, listen: false);
-        vm.resetPagination();
-        vm.getStock(context, provider.selectedExercice, offset: 0);
-        break;
-
-      case 'client':
-        final vm = Provider.of<ClientViewModel>(context, listen: false);
-        vm.resetPagination();
-        vm.getClients(context, provider.selectedExercice, offset: 0);
-        break;
-
-      case 'fournisseur':
-        final vm = Provider.of<FournisseurViewModel>(context, listen: false);
-        vm.resetPagination();
-        vm.getFournisseurs(context, provider.selectedExercice, offset: 0);
-        break;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    return Consumer<AuthViewModel>(
-      builder: (context, provider, child) {
+    return Consumer4<AuthViewModel, StockViewModel, ClientViewModel, FournisseurViewModel>(
+      builder: (context, auth, stk, client, fourn, child) {
+        Exercice? selectedExercice;
+
+        switch (functionType) {
+          case 'stock':
+            selectedExercice = stk.selectedExerciceStock;
+            break;
+
+          case 'client':
+            selectedExercice = client.selectedExerciceClient;
+            break;
+
+          case 'fournisseur':
+            selectedExercice = fourn.selectedExerciceFourniseur;
+            break;
+        }
+
         return Container(
           height: 40,
           width: width * 0.3,
@@ -62,7 +49,7 @@ class ExerciceSelector extends StatelessWidget {
           ),
           child: DropdownButton<Exercice>(
             padding: EdgeInsets.symmetric(horizontal: width * 0.03),
-            value: provider.selectedExercice,
+            value: selectedExercice,
             underline: Container(),
             isExpanded: true,
             dropdownColor: Theme.of(context).secondaryHeaderColor,
@@ -76,42 +63,47 @@ class ExerciceSelector extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
             onChanged: (Exercice? exercice) {
-              provider.selectedExercice = exercice;
-              provider.notifyListeners();
+              if (exercice == null) return;
 
               switch (functionType) {
                 case 'stock':
-                  final vm = Provider.of<StockViewModel>(context, listen: false);
-                  vm.resetPagination();
-                  vm.getStock(
+                  stk.selectedExerciceStock = exercice;
+                  stk.notifyListeners();
+
+                  stk.resetPagination();
+                  stk.getStock(
                     context,
-                    provider.selectedExercice,
+                    exercice,
                     offset: 0,
                   );
                   break;
 
                 case 'client':
-                  final vm = Provider.of<ClientViewModel>(context, listen: false);
-                  vm.resetPagination();
-                  vm.getClients(
+                  client.selectedExerciceClient = exercice;
+                  client.notifyListeners();
+
+                  client.resetPagination();
+                  client.getClients(
                     context,
-                    provider.selectedExercice,
+                    exercice,
                     offset: 0,
                   );
                   break;
 
                 case 'fournisseur':
-                  final vm = Provider.of<FournisseurViewModel>(context, listen: false);
-                  vm.resetPagination();
-                  vm.getFournisseurs(
+                  fourn.selectedExerciceFourniseur = exercice;
+                  fourn.notifyListeners();
+
+                  fourn.resetPagination();
+                  fourn.getFournisseurs(
                     context,
-                    provider.selectedExercice,
+                    exercice,
                     offset: 0,
                   );
                   break;
               }
             },
-            items: provider.exercices!
+            items: (auth.exercices ?? [])
                 .map<DropdownMenuItem<Exercice>>(
                   (exercice) => DropdownMenuItem<Exercice>(
                     value: exercice,

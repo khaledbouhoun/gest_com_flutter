@@ -13,7 +13,11 @@ import 'package:http/http.dart' as http;
 class StockViewModel extends ChangeNotifier {
   AuthViewModel authProvider;
 
-  StockViewModel(this.authProvider);
+  StockViewModel(this.authProvider) {
+    selectedExerciceStock = authProvider.initialExercice;
+  }
+
+  Exercice? selectedExerciceStock;
 
   List<Product> products = [];
   List<Product> filteredProducts = [];
@@ -138,8 +142,7 @@ class StockViewModel extends ChangeNotifier {
             'limit': effectiveLimit,
             'offset': effectiveOffset,
             'search': _searchQuery,
-            'prmtarifdefautab':
-                vente ? " where TE.tfeno = ${authProvider.sellSettings?.PRMTARIFDEFAUTAB ?? '01'} " : '',
+            'prmtarifdefautab': vente ? " where TE.tfeno = ${authProvider.sellSettings?.PRMTARIFDEFAUTAB ?? '01'} " : '',
           }),
       );
 
@@ -212,14 +215,8 @@ class StockViewModel extends ChangeNotifier {
   Map<String, dynamic> _buildRequestBody(int userType, bool isVente) {
     String sqlDepots = " SUM(ArtQte) AS QTE FROM Stk_Articles_Exe_AB WHERE ";
 
-    final famills = authProvider.stkFamills
-        .where((e) => isVente ? (e.write == true) : (e.read == true))
-        .map((e) => e.rubrique)
-        .toList();
-    final depots = authProvider.stkDepots
-        .where((e) => isVente ? (e.write == true) : (e.read == true))
-        .map((e) => e.rubrique)
-        .toList();
+    final famills = authProvider.stkFamills.where((e) => isVente ? (e.write == true) : (e.read == true)).map((e) => e.rubrique).toList();
+    final depots = authProvider.stkDepots.where((e) => isVente ? (e.write == true) : (e.read == true)).map((e) => e.rubrique).toList();
     final tarifs = authProvider.getTarifPerDefault();
 
     if (userType == 0 && (famills.isEmpty)) {
@@ -256,8 +253,7 @@ class StockViewModel extends ChangeNotifier {
     }
 
     return {
-      'TarifDefaut':
-          authProvider.selectedUser?.USRTYPE == 0 ? "ON TE.TfeNo = $tarifs" : "ON TE.TfeNo = p.PrmTarifDefautAB",
+      'TarifDefaut': authProvider.selectedUser?.USRTYPE == 0 ? "ON TE.TfeNo = $tarifs" : "ON TE.TfeNo = p.PrmTarifDefautAB",
       'families': famillsSql,
       'depots': sqlDepots + depotsSql,
     };
@@ -389,14 +385,10 @@ class StockViewModel extends ChangeNotifier {
   //filter tarifs with user vte write permissions
   List<TarifEntate> filterTarifs() {
     if (authProvider.selectedUser!.USRTYPE == 0) {
-      return tarifs!
-          .where((element) =>
-              authProvider.vteTarifs.where((e) => e.write == true).map((e) => e.rubrique).contains(element.TFENO))
-          .toList();
+      return tarifs!.where((element) => authProvider.vteTarifs.where((e) => e.write == true).map((e) => e.rubrique).contains(element.TFENO)).toList();
     } else if (authProvider.selectedUser!.USRTYPE == 1) {
       return tarifs!
-          .where((element) =>
-              !authProvider.vteTarifs.where((e) => e.write == true).map((e) => e.rubrique).contains(element.TFENO))
+          .where((element) => !authProvider.vteTarifs.where((e) => e.write == true).map((e) => e.rubrique).contains(element.TFENO))
           .toList();
     } else {
       return tarifs!;

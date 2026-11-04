@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gestion_stock/view_models/auth_view_model.dart';
+import 'package:gestion_stock/view_models/client_view_model.dart';
 import 'package:gestion_stock/view_models/commande_entate_view_model.dart';
 import 'package:gestion_stock/view_models/facture_entate_view_model.dart';
+import 'package:gestion_stock/view_models/fournisseur_view_model.dart';
 import 'package:gestion_stock/view_models/license_view_model.dart';
 import 'package:gestion_stock/view_models/reception_entate_view_model.dart';
+import 'package:gestion_stock/view_models/statistic_view_model.dart';
+import 'package:gestion_stock/view_models/stock_view_model.dart';
 import 'package:gestion_stock/view_models/transaction_view_model.dart';
 import 'package:gestion_stock/views/caisse/caisse.dart';
 import 'package:gestion_stock/views/client/clients.dart';
@@ -66,6 +70,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin, Widget
 
     final transactionProvider = Provider.of<TransactionViewModel>(context, listen: false);
 
+    final fournisseursProvider = Provider.of<FournisseurViewModel>(context, listen: false);
+
+    final clientProvider = Provider.of<ClientViewModel>(context, listen: false);
+
+    final stockProvider = Provider.of<StockViewModel>(context, listen: false);
+
+    final statisticProvider = Provider.of<StatisticViewModel>(context, listen: false);
+
     final exerciceYear = authProvider.initialExercice!.EXENO!;
 
     /// ---------------- Facture & Commande ----------------
@@ -101,7 +113,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin, Widget
       ..startDate = transactionPeriod.start
       ..endDate = transactionPeriod.end;
 
+    fournisseursProvider.selectedExerciceFourniseur = authProvider.initialExercice;
+    clientProvider.selectedExerciceClient = authProvider.initialExercice;
+    stockProvider.selectedExerciceStock = authProvider.initialExercice;
+    statisticProvider.selectedExercicemonthlyTurnover = authProvider.initialExercice;
+    statisticProvider.selectedExercicemonthlyTurnoverByProduct = authProvider.initialExercice;
     await transactionProvider.getTransactions(context, isTodayOnly: true);
+
     debugPrint('-- Providers initialized successfully --');
   }
 
@@ -559,14 +577,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin, Widget
 
         if (provider.selectedUser!.USRTYPE == 0) {
           // Normal user → allowed ONLY if permission exists
-          hasAccess = provider.accessList
-                  ?.any((access) => access.URSTRS == trs && access.URSRES == res && access.URSDRO == '01') ??
-              false;
+          hasAccess = provider.accessList?.any((access) => access.URSTRS == trs && access.URSRES == res && access.URSDRO == '01') ?? false;
         } else if (provider.selectedUser!.USRTYPE == 1) {
           // Restricted user → allowed ONLY if permission does NOT exist
-          hasAccess = !(provider.accessList
-                  ?.any((access) => access.URSTRS == trs && access.URSRES == res && access.URSDRO == '01') ??
-              false);
+          hasAccess = !(provider.accessList?.any((access) => access.URSTRS == trs && access.URSRES == res && access.URSDRO == '01') ?? false);
         } else {
           // Admin or others → always allowed
           hasAccess = true;
@@ -677,14 +691,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin, Widget
 
             if (provider.selectedUser!.USRTYPE == 0) {
               // Regular user - needs explicit access
-              hasAccess = provider.accessList
-                      ?.any((access) => access.URSTRS == trs && access.URSRES == res && access.URSDRO == '01') ??
-                  false;
+              hasAccess = provider.accessList?.any((access) => access.URSTRS == trs && access.URSRES == res && access.URSDRO == '01') ?? false;
             } else if (provider.selectedUser!.USRTYPE == 1) {
               // Restricted user - check if NOT in access list (blacklist)
-              hasAccess = !(provider.accessList
-                      ?.any((access) => access.URSTRS == trs && access.URSRES == res && access.URSDRO == '01') ??
-                  false);
+              hasAccess = !(provider.accessList?.any((access) => access.URSTRS == trs && access.URSRES == res && access.URSDRO == '01') ?? false);
             } else {
               // Admin or other type - full access
               hasAccess = true;

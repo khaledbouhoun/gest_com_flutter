@@ -165,7 +165,7 @@ class Turnover extends StatelessWidget {
                     ),
                     SizedBox(height: width * 0.01),
                     Text(
-                      "${NumberFormat.decimalPattern('fr_FR').format(totalTurnover)} DA",
+                      "${NumberFormat('#,##0.00', 'fr_FR').format(totalTurnover)} DA",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: width * 0.055,

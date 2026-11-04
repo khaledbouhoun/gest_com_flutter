@@ -57,14 +57,15 @@ class StatisticsPage extends State<Statistics> with SingleTickerProviderStateMix
         // Monthly turnover
         if (authViewModel.selectedExercice != null) {
           statisticViewModel.turnoverByMonth(context, authViewModel.selectedExercice!);
+          statisticViewModel.selectedExercicemonthlyTurnover = authViewModel.initialExercice;
         }
         break;
       case 2:
         // Turnover by product
         stockViewModel.getStatisticProducts(context, forceGet: forceGet).then((value) {
           if (authViewModel.selectedExercice != null && stockViewModel.selectedStatisticProduct != null) {
-            statisticViewModel.getTurnoverByProduct(
-                context, authViewModel.selectedExercice!, stockViewModel.selectedStatisticProduct!);
+            statisticViewModel.getTurnoverByProduct(context, authViewModel.selectedExercice!, stockViewModel.selectedStatisticProduct!);
+            statisticViewModel.selectedExercicemonthlyTurnoverByProduct = authViewModel.initialExercice;
           }
         });
         break;
@@ -242,7 +243,7 @@ class StatisticsPage extends State<Statistics> with SingleTickerProviderStateMix
                 SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
                   padding: EdgeInsets.all(width * 0.04),
-                  child: const MonthlyTurnover(),
+                  child: MonthlyTurnover(),
                 ),
                 // Tab 3: Turnover by Product
                 SingleChildScrollView(

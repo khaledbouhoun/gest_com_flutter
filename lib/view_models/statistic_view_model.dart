@@ -9,8 +9,12 @@ import 'package:gestion_stock/widgets/http_extensions.dart';
 import 'package:http/http.dart' as http;
 
 class StatisticViewModel extends ChangeNotifier {
-  AuthViewModel authViewModel;
-  StatisticViewModel(this.authViewModel);
+  final AuthViewModel authViewModel;
+
+  StatisticViewModel(this.authViewModel) {
+    selectedExercicemonthlyTurnover = authViewModel.initialExercice;
+    selectedExercicemonthlyTurnoverByProduct = authViewModel.initialExercice;
+  }
 
   int? statusCode;
   List<Statistic>? comparedTurnovers;
@@ -24,6 +28,9 @@ class StatisticViewModel extends ChangeNotifier {
   int? turnoverByProductStatusCode;
   List<Statistic>? monthlyTurnoverByProduct;
 
+  Exercice? selectedExercicemonthlyTurnover;
+  Exercice? selectedExercicemonthlyTurnoverByProduct;
+
   void notify() {
     Future.microtask(() => notifyListeners());
   }
@@ -33,8 +40,8 @@ class StatisticViewModel extends ChangeNotifier {
       statusCode = 0;
       notify();
 
-      http.Response response = await "/compare".authPost(
-          context, {'path': authViewModel.selectedFolder!.DOSBDD, 'exercice': authViewModel.initialExercice!.EXENO});
+      http.Response response =
+          await "/compare".authPost(context, {'path': authViewModel.selectedFolder!.DOSBDD, 'exercice': authViewModel.initialExercice!.EXENO});
       statusCode = response.statusCode;
 
       if (statusCode == 200) {
@@ -55,8 +62,7 @@ class StatisticViewModel extends ChangeNotifier {
       compareByMonthStatusCode = 0;
       notify();
 
-      http.Response response =
-          await "/compare_by_month".authPost(context, {'path': authViewModel.selectedFolder!.DOSBDD});
+      http.Response response = await "/compare_by_month".authPost(context, {'path': authViewModel.selectedFolder!.DOSBDD});
       compareByMonthStatusCode = response.statusCode;
 
       if (compareByMonthStatusCode == 200) {
@@ -80,8 +86,7 @@ class StatisticViewModel extends ChangeNotifier {
       turnoverByMonthStatusCode = 0;
       notify();
 
-      http.Response response = await "/turnover_by_month?year=${exercice.EXENO}"
-          .authPost(context, {'path': authViewModel.selectedFolder!.DOSBDD});
+      http.Response response = await "/turnover_by_month?year=${exercice.EXENO}".authPost(context, {'path': authViewModel.selectedFolder!.DOSBDD});
       turnoverByMonthStatusCode = response.statusCode;
 
       if (turnoverByMonthStatusCode == 200) {

@@ -1,15 +1,21 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:gestion_stock/models/fournisseur.dart';
 import 'package:gestion_stock/models/paginated_response.dart';
 import 'package:gestion_stock/models/pagination_meta.dart';
 import 'package:gestion_stock/widgets/http_extensions.dart';
+
 import '../models/exercice.dart';
 import 'auth_view_model.dart';
 
 class FournisseurViewModel extends ChangeNotifier {
   AuthViewModel authProvider;
-  FournisseurViewModel(this.authProvider);
+  FournisseurViewModel(this.authProvider) {
+    selectedExerciceFourniseur = authProvider.initialExercice;
+  }
+
+  Exercice? selectedExerciceFourniseur;
 
   List<Fournisseur> fournisseurs = [];
   List<Fournisseur> filteredFournisseurs = [];

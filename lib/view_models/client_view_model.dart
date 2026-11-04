@@ -10,7 +10,11 @@ import 'auth_view_model.dart';
 
 class ClientViewModel extends ChangeNotifier {
   AuthViewModel authProvider;
-  ClientViewModel(this.authProvider);
+  ClientViewModel(this.authProvider) {
+    selectedExerciceClient = authProvider.initialExercice;
+  }
+
+  Exercice? selectedExerciceClient;
 
   List<Client>? clients;
   Client? _selectedClient;
@@ -151,8 +155,7 @@ class ClientViewModel extends ChangeNotifier {
     required String search,
     bool isVente = false,
   }) {
-    final categoriesList =
-        authProvider.catgClients.where((e) => isVente ? (e.write == true) : (e.read == true)).map((e) => e.rubrique).toList();
+    final categoriesList = authProvider.catgClients.where((e) => isVente ? (e.write == true) : (e.read == true)).map((e) => e.rubrique).toList();
 
     final territoiresList =
         authProvider.clientsTerritoires.where((e) => isVente ? (e.write == true) : (e.read == true)).map((e) => e.rubrique).toList();
@@ -220,8 +223,8 @@ class ClientViewModel extends ChangeNotifier {
       };
 
       http.Response response;
-      response = await http.post(Uri.parse('http://${authProvider.ipaddress}:${authProvider.port}/add_client'),
-          body: jsonEncode(body), headers: headers);
+      response =
+          await http.post(Uri.parse('http://${authProvider.ipaddress}:${authProvider.port}/add_client'), body: jsonEncode(body), headers: headers);
       addStatusCode = response.statusCode;
       addButtonVisible = !addButtonVisible;
       notify();
@@ -274,8 +277,8 @@ class ClientViewModel extends ChangeNotifier {
       };
 
       http.Response response;
-      response = await http.post(Uri.parse('http://${authProvider.ipaddress}:${authProvider.port}/modify_client'),
-          body: jsonEncode(body), headers: headers);
+      response =
+          await http.post(Uri.parse('http://${authProvider.ipaddress}:${authProvider.port}/modify_client'), body: jsonEncode(body), headers: headers);
       modifyStatusCode = response.statusCode;
       modifyButtonVisible = !modifyButtonVisible;
       notify();

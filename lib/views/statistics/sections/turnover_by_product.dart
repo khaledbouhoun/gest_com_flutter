@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:gestion_stock/models/exercice.dart';
 import 'package:gestion_stock/view_models/stock_view_model.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -11,21 +12,7 @@ import '../../../view_models/statistic_view_model.dart';
 class TurnoverByProduct extends StatelessWidget {
   TurnoverByProduct({super.key});
 
-  static const List<String> _months = [
-    '',
-    'Jan',
-    'Fév',
-    'Mar',
-    'Avr',
-    'Mai',
-    'Juin',
-    'Juil',
-    'Aoû',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Déc'
-  ];
+  static const List<String> _months = ['', 'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
   NumberFormat fmt = NumberFormat.decimalPatternDigits(locale: 'fr_FR', decimalDigits: 2);
 
   @override
@@ -52,9 +39,10 @@ class TurnoverByProduct extends StatelessWidget {
           // Chart Card
           Container(
             padding: EdgeInsets.all(width * 0.04),
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), boxShadow: [
-              BoxShadow(color: Colors.deepPurple.withValues(alpha: 0.08), blurRadius: 20, offset: const Offset(0, 8))
-            ]),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [BoxShadow(color: Colors.deepPurple.withValues(alpha: 0.08), blurRadius: 20, offset: const Offset(0, 8))]),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
                 Container(
@@ -65,10 +53,8 @@ class TurnoverByProduct extends StatelessWidget {
                     child: Icon(Icons.inventory_2_rounded, color: Colors.white, size: width * 0.05)),
                 SizedBox(width: width * 0.03),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text("Performance Article",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: width * 0.045, color: Colors.black87)),
-                  Text("Évolution mensuelle des ventes",
-                      style: TextStyle(fontSize: width * 0.032, color: Colors.grey[600])),
+                  Text("Performance Article", style: TextStyle(fontWeight: FontWeight.bold, fontSize: width * 0.045, color: Colors.black87)),
+                  Text("Évolution mensuelle des ventes", style: TextStyle(fontSize: width * 0.032, color: Colors.grey[600])),
                 ]),
               ]),
               SizedBox(height: width * 0.05),
@@ -80,53 +66,69 @@ class TurnoverByProduct extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext ctx, double w, AuthViewModel authVM, StatisticViewModel statVM,
-      StockViewModel stockVM, double total) {
+  Widget _buildHeader(BuildContext ctx, double w, AuthViewModel authVM, StatisticViewModel statVM, StockViewModel stockVM, double total) {
     return Container(
       padding: EdgeInsets.all(w * 0.04),
       decoration: BoxDecoration(
           gradient: LinearGradient(colors: [Colors.deepPurple[600]!, Colors.deepPurple[400]!]),
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(color: Colors.deepPurple.withValues(alpha: 0.3), blurRadius: 15, offset: const Offset(0, 6))
-          ]),
+          boxShadow: [BoxShadow(color: Colors.deepPurple.withValues(alpha: 0.3), blurRadius: 15, offset: const Offset(0, 6))]),
       child: Row(children: [
         Container(
             padding: EdgeInsets.all(w * 0.03),
-            decoration:
-                BoxDecoration(color: Colors.white.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(14)),
+            decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(14)),
             child: Icon(Icons.shopping_bag_rounded, color: Colors.white, size: w * 0.08)),
         SizedBox(width: w * 0.04),
         Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text("Total Article", style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontSize: w * 0.035)),
-          Text("${fmt.format(total)} DA",
-              style: TextStyle(color: Colors.white, fontSize: w * 0.05, fontWeight: FontWeight.bold)),
+          Text("${fmt.format(total)} DA", style: TextStyle(color: Colors.white, fontSize: w * 0.05, fontWeight: FontWeight.bold)),
         ])),
-        GestureDetector(
-          onTap: () => _showExercicePicker(ctx, authVM, statVM, stockVM),
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: w * 0.03, vertical: w * 0.015),
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  authVM.selectedExercice?.EXENO.toString() ?? "Année",
-                  style: TextStyle(color: Colors.deepPurple[700], fontWeight: FontWeight.bold, fontSize: w * 0.04),
-                ),
-                SizedBox(width: w * 0.01),
-                Icon(Icons.keyboard_arrow_down_rounded, color: Colors.deepPurple[600], size: w * 0.05),
-              ],
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<Exercice>(
+              value: statVM.selectedExercicemonthlyTurnoverByProduct,
+              isDense: true,
+              icon: Icon(Icons.keyboard_arrow_down_rounded, color: Colors.deepPurple[600]),
+              style: TextStyle(color: Colors.deepPurple[700], fontWeight: FontWeight.bold, fontSize: 14),
+              onChanged: (e) {
+                if (e != null) {
+                  statVM.selectedExercicemonthlyTurnoverByProduct = e;
+                  statVM.notifyListeners();
+                  if (stockVM.selectedStatisticProduct != null) {
+                    statVM.getTurnoverByProduct(ctx, e, stockVM.selectedStatisticProduct!);
+                  }
+                }
+              },
+              items: authVM.exercices?.map((e) => DropdownMenuItem(value: e, child: Text(e.EXENO.toString()))).toList(),
             ),
           ),
         ),
+        // GestureDetector(
+        //   onTap: () => _showExercicePicker(ctx, authVM, statVM, stockVM),
+        //   child: Container(
+        //     padding: EdgeInsets.symmetric(horizontal: w * 0.03, vertical: w * 0.015),
+        //     decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+        //     child: Row(
+        //       mainAxisSize: MainAxisSize.min,
+        //       children: [
+        //         Text(
+        //           authVM.selectedExercice?.EXENO.toString() ?? "Année",
+        //           style: TextStyle(color: Colors.deepPurple[700], fontWeight: FontWeight.bold, fontSize: w * 0.04),
+        //         ),
+        //         SizedBox(width: w * 0.01),
+        //         Icon(Icons.keyboard_arrow_down_rounded, color: Colors.deepPurple[600], size: w * 0.05),
+        //       ],
+        //     ),
+        //   ),
+        // ),
       ]),
     );
   }
 
-  void _showExercicePicker(
-      BuildContext context, AuthViewModel authVM, StatisticViewModel statVM, StockViewModel stockVM) {
+  void _showExercicePicker(BuildContext context, AuthViewModel authVM, StatisticViewModel statVM, StockViewModel stockVM) {
     if (authVM.exercices == null || authVM.exercices!.isEmpty) return;
 
     showModalBottomSheet(
@@ -151,8 +153,7 @@ class TurnoverByProduct extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Text("Sélectionner l'exercice",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.deepPurple[800])),
+              child: Text("Sélectionner l'exercice", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.deepPurple[800])),
             ),
             Flexible(
               child: ListView.builder(
@@ -186,15 +187,15 @@ class TurnoverByProduct extends StatelessWidget {
     );
   }
 
-  Widget _buildProductSelector(
-      BuildContext ctx, double w, AuthViewModel authVM, StatisticViewModel statVM, StockViewModel stockVM) {
+  Widget _buildProductSelector(BuildContext ctx, double w, AuthViewModel authVM, StatisticViewModel statVM, StockViewModel stockVM) {
     return GestureDetector(
       onTap: () => _showProductSearch(ctx, w, authVM, statVM, stockVM),
       child: Container(
         padding: EdgeInsets.all(w * 0.035),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: [
-          BoxShadow(color: Colors.deepPurple.withValues(alpha: 0.06), blurRadius: 10, offset: const Offset(0, 4))
-        ]),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [BoxShadow(color: Colors.deepPurple.withValues(alpha: 0.06), blurRadius: 10, offset: const Offset(0, 4))]),
         child: Row(children: [
           Container(
               padding: EdgeInsets.all(w * 0.02),
@@ -217,8 +218,7 @@ class TurnoverByProduct extends StatelessWidget {
     );
   }
 
-  void _showProductSearch(
-      BuildContext context, double w, AuthViewModel authVM, StatisticViewModel statVM, StockViewModel stockVM) {
+  void _showProductSearch(BuildContext context, double w, AuthViewModel authVM, StatisticViewModel statVM, StockViewModel stockVM) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -238,12 +238,10 @@ class TurnoverByProduct extends StatelessWidget {
     );
   }
 
-  Widget _buildContent(BuildContext ctx, double w, double h, AuthViewModel authVM, StatisticViewModel statVM,
-      StockViewModel stockVM, NumberFormat fmt, double max) {
+  Widget _buildContent(
+      BuildContext ctx, double w, double h, AuthViewModel authVM, StatisticViewModel statVM, StockViewModel stockVM, NumberFormat fmt, double max) {
     if (statVM.turnoverByProductStatusCode == 0) {
-      return SizedBox(
-          height: h * 0.25,
-          child: Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.deepPurple[600]))));
+      return SizedBox(height: h * 0.25, child: Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.deepPurple[600]))));
     }
     if (statVM.turnoverByProductStatusCode == 404) {
       return SizedBox(
@@ -255,8 +253,7 @@ class TurnoverByProduct extends StatelessWidget {
                 decoration: BoxDecoration(color: Colors.grey[100], shape: BoxShape.circle),
                 child: Icon(Icons.inventory_2_outlined, size: w * 0.12, color: Colors.grey[400])),
             SizedBox(height: h * 0.02),
-            Text('Aucune donnée trouvée',
-                style: TextStyle(color: Colors.grey[700], fontSize: w * 0.04, fontWeight: FontWeight.w600)),
+            Text('Aucune donnée trouvée', style: TextStyle(color: Colors.grey[700], fontSize: w * 0.04, fontWeight: FontWeight.w600)),
             SizedBox(height: h * 0.01),
             Text('Sélectionnez un autre Article', style: TextStyle(color: Colors.grey[500], fontSize: w * 0.032)),
           ])));
@@ -271,8 +268,7 @@ class TurnoverByProduct extends StatelessWidget {
                 decoration: BoxDecoration(color: Colors.red[50], shape: BoxShape.circle),
                 child: Icon(Icons.cloud_off_rounded, size: w * 0.12, color: Colors.red[400])),
             SizedBox(height: h * 0.02),
-            Text('Impossible de se connecter',
-                style: TextStyle(color: Colors.grey[700], fontSize: w * 0.04, fontWeight: FontWeight.w600)),
+            Text('Impossible de se connecter', style: TextStyle(color: Colors.grey[700], fontSize: w * 0.04, fontWeight: FontWeight.w600)),
             SizedBox(height: h * 0.02),
             ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
@@ -303,8 +299,7 @@ class TurnoverByProduct extends StatelessWidget {
                   show: true,
                   drawVerticalLine: false,
                   horizontalInterval: max > 0 ? max / 4 : 1,
-                  getDrawingHorizontalLine: (v) =>
-                      FlLine(color: Colors.grey.withValues(alpha: 0.15), strokeWidth: 1, dashArray: [5, 5])),
+                  getDrawingHorizontalLine: (v) => FlLine(color: Colors.grey.withValues(alpha: 0.15), strokeWidth: 1, dashArray: [5, 5])),
               lineTouchData: LineTouchData(
                   touchTooltipData: LineTouchTooltipData(
                       fitInsideHorizontally: true,
@@ -321,9 +316,7 @@ class TurnoverByProduct extends StatelessWidget {
                           reservedSize: w * 0.12,
                           interval: max > 0 ? max / 4 : 1,
                           getTitlesWidget: (v, m) => SideTitleWidget(
-                              meta: m,
-                              child: Text(NumberFormat.compact().format(v),
-                                  style: TextStyle(color: Colors.grey[600], fontSize: 11))))),
+                              meta: m, child: Text(NumberFormat.compact().format(v), style: TextStyle(color: Colors.grey[600], fontSize: 11))))),
                   bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                           showTitles: true,
@@ -335,9 +328,7 @@ class TurnoverByProduct extends StatelessWidget {
                                 meta: m,
                                 child: RotatedBox(
                                     quarterTurns: -1,
-                                    child: Text(_months[i],
-                                        style: TextStyle(
-                                            color: Colors.grey[700], fontWeight: FontWeight.w600, fontSize: 11))));
+                                    child: Text(_months[i], style: TextStyle(color: Colors.grey[700], fontWeight: FontWeight.w600, fontSize: 11))));
                           })),
                   topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                   rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false))),
@@ -349,14 +340,14 @@ class TurnoverByProduct extends StatelessWidget {
                     barWidth: 3,
                     dotData: FlDotData(
                         show: true,
-                        getDotPainter: (s, p, b, i) => FlDotCirclePainter(
-                            radius: 4, color: Colors.white, strokeWidth: 2, strokeColor: Colors.deepPurple[600]!)),
+                        getDotPainter: (s, p, b, i) =>
+                            FlDotCirclePainter(radius: 4, color: Colors.white, strokeWidth: 2, strokeColor: Colors.deepPurple[600]!)),
                     belowBarData: BarAreaData(
                         show: true,
-                        gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [
-                          Colors.deepPurple[400]!.withValues(alpha: 0.3),
-                          Colors.deepPurple[400]!.withValues(alpha: 0.05)
-                        ])),
+                        gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.deepPurple[400]!.withValues(alpha: 0.3), Colors.deepPurple[400]!.withValues(alpha: 0.05)])),
                     spots: data.map((e) => FlSpot(e.X, e.Y)).toList())
               ],
             ),
@@ -430,8 +421,7 @@ class _ProductSearchSheetState extends State<_ProductSearchSheet> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Choisir un Article",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.deepPurple[800])),
+                Text("Choisir un Article", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.deepPurple[800])),
                 IconButton(
                   icon: const Icon(Icons.close_rounded),
                   onPressed: () => Navigator.pop(context),
