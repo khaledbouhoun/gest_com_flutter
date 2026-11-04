@@ -85,14 +85,14 @@ class TurnoverByProduct extends StatelessWidget {
           Text("${fmt.format(total)} DA", style: TextStyle(color: Colors.white, fontSize: w * 0.05, fontWeight: FontWeight.bold)),
         ])),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: w * 0.03, vertical: w * 0.01),
           decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<Exercice>(
               value: statVM.selectedExercicemonthlyTurnoverByProduct,
               isDense: true,
               icon: Icon(Icons.keyboard_arrow_down_rounded, color: Colors.deepPurple[600]),
-              style: TextStyle(color: Colors.deepPurple[700], fontWeight: FontWeight.bold, fontSize: 14),
+              style: TextStyle(color: Colors.deepPurple[700], fontWeight: FontWeight.bold, fontSize: w * 0.04),
               onChanged: (e) {
                 if (e != null) {
                   statVM.selectedExercicemonthlyTurnoverByProduct = e;
