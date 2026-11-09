@@ -56,7 +56,10 @@ class LicenseViewModel extends ChangeNotifier {
     final licenseKey = await SecureStorageService.getUserKey();
 
     if (licenseKey == null) {
+      _isActivated = false;
+      _licenseKey = null;
       await prefs.setBool('is_activated', false);
+      notify();
       return CheckResult.invalidLicense;
     }
 
@@ -94,13 +97,28 @@ class LicenseViewModel extends ChangeNotifier {
     final result = await performOnlineCheck(licenseKey);
 
     if (result == CheckResult.success) {
+      _isActivated = true;
+      _licenseKey = licenseKey;
       await prefs.setBool('is_activated', true);
       await prefs.setString(
         'last_sync_date',
         DateTime.now().toIso8601String(),
       );
-    } else {
+      notify();
+    } else if (result == CheckResult.invalidLicense) {
+      _isActivated = false;
+      _licenseKey = null;
       await prefs.setBool('is_activated', false);
+      notify();
+    } else {
+      // In case of noInternet or serverError:
+      // If the app was already activated previously, do not revoke the license.
+      final wasActivated = prefs.getBool('is_activated') ?? false;
+      if (wasActivated) {
+        _isActivated = true;
+        _licenseKey = licenseKey;
+        notify();
+      }
     }
 
     return result;
@@ -124,6 +142,9 @@ class LicenseViewModel extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        if (data['success'] == false) {
+          return CheckResult.invalidLicense;
+        }
         final prefs = await SharedPreferences.getInstance();
 
         if (data['license'] != null && data['license']['last_sync_date'] != null) {
@@ -276,8 +297,10 @@ class LicenseViewModel extends ChangeNotifier {
         _licenseKey = null;
         await prefs.remove('is_activated');
         await prefs.remove('license_key');
+        await prefs.remove('last_sync_date');
         await prefs.remove('subscription_id');
         await prefs.remove('type_app');
+        await SecureStorageService.clearAll();
         return true;
       } else {
         _errorMessage = 'Erreur ${response.statusCode} lors de la suppression de la licence.';
@@ -454,8 +477,12 @@ class LicenseViewModel extends ChangeNotifier {
   }
 
   DateTime formatApiDate(String apiDate) {
-    DateTime utcTime = DateTime.parse(apiDate);
-    return utcTime.toLocal();
+    try {
+      DateTime parsed = DateTime.parse(apiDate.trim().replaceAll(' ', 'T'));
+      return parsed.toLocal();
+    } catch (_) {
+      return DateTime.now();
+    }
   }
 
   Future<void> clearPrefs() async {

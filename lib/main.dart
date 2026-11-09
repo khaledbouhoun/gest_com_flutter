@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gestion_stock/ask_first.dart';
 import 'package:gestion_stock/view_models/auth_view_model.dart';
 import 'package:gestion_stock/view_models/client_view_model.dart';
@@ -31,8 +30,6 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-
-  await dotenv.load(fileName: ".env");
 
   // 🧠 Initialize your core dependencies
   final authViewModel = AuthViewModel();
@@ -96,17 +93,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late Future<CheckResult> _activationFuture;
+
   @override
   void initState() {
     super.initState();
     getIPAddress();
+    final licenseViewModel = Provider.of<LicenseViewModel>(context, listen: false);
+    _activationFuture = licenseViewModel.checkActivationStatus();
   }
 
   @override
   Widget build(BuildContext context) {
     final licenseViewModel = context.watch<LicenseViewModel>();
     return FutureBuilder<CheckResult>(
-      future: licenseViewModel.checkActivationStatus(),
+      future: _activationFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting && !licenseViewModel.isActivated) {
           return const Scaffold(
@@ -114,11 +115,11 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         }
 
-        if (!licenseViewModel.isActivated) {
-          return const LicenseActivationPage();
+        if (licenseViewModel.isActivated) {
+          return const AskFirst();
         }
 
-        return AskFirst();
+        return const LicenseActivationPage();
       },
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gestion_stock/ask_first.dart';
+import 'package:gestion_stock/flutter_scure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
 
@@ -31,6 +32,16 @@ class _LicenseActivationPageState extends State<LicenseActivationPage> with Sing
       parent: _animationController,
       curve: Curves.elasticOut,
     );
+    _loadSavedKey();
+  }
+
+  Future<void> _loadSavedKey() async {
+    final savedKey = await SecureStorageService.getUserKey();
+    if (savedKey != null && savedKey.isNotEmpty && mounted) {
+      setState(() {
+        _controller.text = savedKey;
+      });
+    }
   }
 
   @override

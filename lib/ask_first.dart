@@ -168,14 +168,6 @@ class _AskFirstState extends State<AskFirst> with SingleTickerProviderStateMixin
                                       },
                                     ),
                                   );
-                                } else {
-                                  Provider.of<LicenseViewModel>(
-                                    context,
-                                    listen: false,
-                                  ).showSessionExpiredDialog(
-                                    context,
-                                    initialError: isLicenseValid,
-                                  );
                                 }
                               },
                             ),
@@ -225,8 +217,7 @@ class _AskFirstState extends State<AskFirst> with SingleTickerProviderStateMixin
                                             color: Colors.redAccent.withValues(alpha: 0.1),
                                             shape: BoxShape.circle,
                                           ),
-                                          child: const Icon(Icons.warning_amber_rounded,
-                                              size: 50, color: Colors.redAccent),
+                                          child: const Icon(Icons.warning_amber_rounded, size: 50, color: Colors.redAccent),
                                         ),
                                         const SizedBox(height: 20),
                                         Text(
@@ -243,8 +234,7 @@ class _AskFirstState extends State<AskFirst> with SingleTickerProviderStateMixin
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             fontSize: 14,
-                                            color:
-                                                Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+                                            color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                                           ),
                                         ),
                                         const SizedBox(height: 25),
@@ -256,8 +246,7 @@ class _AskFirstState extends State<AskFirst> with SingleTickerProviderStateMixin
                                                 onPressed: () => Navigator.pop(context),
                                                 style: TextButton.styleFrom(
                                                   padding: const EdgeInsets.symmetric(vertical: 12),
-                                                  shape:
-                                                      RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                                 ),
                                                 child: const Text('Annuler', style: TextStyle(color: Colors.grey)),
                                               ),
@@ -277,8 +266,7 @@ class _AskFirstState extends State<AskFirst> with SingleTickerProviderStateMixin
                                                         context,
                                                         PageRouteBuilder(
                                                           pageBuilder: (_, __, ___) => const MyHomePage(),
-                                                          transitionsBuilder: (_, anim, __, child) =>
-                                                              FadeTransition(opacity: anim, child: child),
+                                                          transitionsBuilder: (_, anim, __, child) => FadeTransition(opacity: anim, child: child),
                                                         ),
                                                       );
                                                     }
@@ -300,8 +288,7 @@ class _AskFirstState extends State<AskFirst> with SingleTickerProviderStateMixin
                                                   foregroundColor: Colors.white,
                                                   elevation: 0,
                                                   padding: const EdgeInsets.symmetric(vertical: 12),
-                                                  shape:
-                                                      RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                                 ),
                                                 child: Consumer<LicenseViewModel>(
                                                   builder: (context, vm, _) {
@@ -309,11 +296,9 @@ class _AskFirstState extends State<AskFirst> with SingleTickerProviderStateMixin
                                                         ? const SizedBox(
                                                             height: 20,
                                                             width: 20,
-                                                            child: CircularProgressIndicator(
-                                                                strokeWidth: 2, color: Colors.white),
+                                                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                                                           )
-                                                        : const Text('Confirmer',
-                                                            style: TextStyle(fontWeight: FontWeight.bold));
+                                                        : const Text('Confirmer', style: TextStyle(fontWeight: FontWeight.bold));
                                                   },
                                                 ),
                                               ),

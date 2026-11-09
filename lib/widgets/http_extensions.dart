@@ -1,13 +1,19 @@
 // http_extensions.dart
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:provider/provider.dart';
-import 'package:gestion_stock/view_models/auth_view_model.dart';
+
 import 'package:flutter/material.dart';
+import 'package:gestion_stock/view_models/auth_view_model.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 extension AuthWebRequest on String {
+  Future<bool> testserver(AuthViewModel auth) async {
+    var server = await http.get(Uri.parse('${auth.baseUrl}/version'));
+    return server.statusCode == 200 ? true : false;
+  }
+
   Future<http.Response> authPost(BuildContext context, dynamic body) async {
-    final auth = Provider.of<AuthViewModel>(context, listen: false);
+    AuthViewModel auth = Provider.of<AuthViewModel>(context, listen: false);
     var webRequest = await http
         .post(
           Uri.parse('${auth.baseUrl}$this'),
@@ -16,7 +22,7 @@ extension AuthWebRequest on String {
           },
           body: jsonEncode(body),
         )
-        .timeout(Duration(minutes: 2));
+        .timeout(Duration(seconds: 5));
 
     print('[Post]Request URL: ${auth.baseUrl}$this');
     print('[Post]Request Body: ${jsonEncode(body)}');

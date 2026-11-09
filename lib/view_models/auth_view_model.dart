@@ -106,8 +106,7 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   _DatePeriod resolvePeriod() {
-    final now =
-        DateTime.now().year == initialExercice!.EXENO! ? DateTime.now() : DateTime(initialExercice!.EXENO!, 12, 31);
+    final now = DateTime.now().year == initialExercice!.EXENO! ? DateTime.now() : DateTime(initialExercice!.EXENO!, 12, 31);
 
     switch (sellSettings?.PRMBLINTERVDATE) {
       /// سنة كاملة
@@ -149,7 +148,6 @@ class AuthViewModel extends ChangeNotifier {
     try {
       statusCode = 0;
       notify();
-      // http.Response response = await http.post(Uri.parse('http://$ipaddress:$port/auth'));
       http.Response response = await "/getuserandfolder".authPost(context, null);
       statusCode = response.statusCode;
       if (response.statusCode == 200) {
@@ -232,8 +230,7 @@ class AuthViewModel extends ChangeNotifier {
       loginStatusCode = 0;
       buttonVisible = !buttonVisible;
       notify();
-      http.Response response =
-          await "/verify_admin?user=${selectedUser!.USRNO}&folder=${selectedFolder!.DOSNO}".authPost(context, null);
+      http.Response response = await "/verify_admin?user=${selectedUser!.USRNO}&folder=${selectedFolder!.DOSNO}".authPost(context, null);
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         accessList = Access.listFromJson(data['access']);
@@ -257,8 +254,7 @@ class AuthViewModel extends ChangeNotifier {
       loginStatusCode = 0;
       buttonVisible = !buttonVisible;
       notify();
-      http.Response response =
-          await "/verify_standard?user=${selectedUser!.USRNO}&folder=${selectedFolder!.DOSNO}".authPost(context, null);
+      http.Response response = await "/verify_standard?user=${selectedUser!.USRNO}&folder=${selectedFolder!.DOSNO}".authPost(context, null);
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         accessList = Access.listFromJson(data['access']);
@@ -278,15 +274,9 @@ class AuthViewModel extends ChangeNotifier {
 
   bool verifyAccess(String resourcetype, String resource, String droit) {
     if (selectedUser!.USRTYPE == 0) {
-      return accessList!
-              .where(
-                  (element) => element.URSTRS == resourcetype && element.URSRES == resource && element.URSDRO == droit)
-              .length ==
-          1;
+      return accessList!.where((element) => element.URSTRS == resourcetype && element.URSRES == resource && element.URSDRO == droit).length == 1;
     } else if (selectedUser!.USRTYPE == 1) {
-      return accessList!
-          .where((element) => element.URSTRS == resourcetype && element.URSRES == resource && element.URSDRO == droit)
-          .isEmpty;
+      return accessList!.where((element) => element.URSTRS == resourcetype && element.URSRES == resource && element.URSDRO == droit).isEmpty;
     } else {
       return true;
     }
@@ -297,8 +287,7 @@ class AuthViewModel extends ChangeNotifier {
     try {
       exeStatusCode = 0;
       notify();
-      http.Response response =
-          await "/get_rubriques?user=${selectedUser!.USRNO}&folder=${selectedFolder!.DOSNO}".authPost(context, null);
+      http.Response response = await "/get_rubriques?user=${selectedUser!.USRNO}&folder=${selectedFolder!.DOSNO}".authPost(context, null);
       exeStatusCode = response.statusCode;
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
@@ -562,10 +551,7 @@ class AuthViewModel extends ChangeNotifier {
   // Hepls function
 
   String? getDepotsWrite() {
-    return rubriques
-        .where((r) => r.USBTRS == '01' && r.USBTRB == '01' && r.USBWRITE == 2 && r.USBDEFAULT == 1)
-        .map((r) => r.USBRUB)
-        .firstOrNull;
+    return rubriques.where((r) => r.USBTRS == '01' && r.USBTRB == '01' && r.USBWRITE == 2 && r.USBDEFAULT == 1).map((r) => r.USBRUB).firstOrNull;
   }
 
   String getDepotsDefault(List<Map<String, String>> depots) {
@@ -573,20 +559,14 @@ class AuthViewModel extends ChangeNotifier {
 
     switch (selectedUser!.USRTYPE) {
       case 0:
-        depotDefault = rubriques
-                .where((r) => r.USBTRS == '01' && r.USBTRB == '01' && r.USBDEFAULT == 1)
-                .map((r) => r.USBRUB)
-                .firstOrNull ??
+        depotDefault = rubriques.where((r) => r.USBTRS == '01' && r.USBTRB == '01' && r.USBDEFAULT == 1).map((r) => r.USBRUB).firstOrNull ??
             sellSettings!.PRMDEPOTDEFAUTAB!;
 
         break;
       case 1:
-        Rubrique? depot = rubriques
-            .where((r) => r.USBTRS == '01' && r.USBTRB == '01' && r.USBRUB == sellSettings!.PRMDEPOTDEFAUTAB)
-            .firstOrNull;
+        Rubrique? depot = rubriques.where((r) => r.USBTRS == '01' && r.USBTRB == '01' && r.USBRUB == sellSettings!.PRMDEPOTDEFAUTAB).firstOrNull;
         if (depot != null) {
-          depotDefault =
-              depots.where((d) => depotDefault != d['dptno']).firstOrNull?['dptno'] ?? sellSettings!.PRMDEPOTDEFAUTAB!;
+          depotDefault = depots.where((d) => depotDefault != d['dptno']).firstOrNull?['dptno'] ?? sellSettings!.PRMDEPOTDEFAUTAB!;
         } else {
           depotDefault = sellSettings!.PRMDEPOTDEFAUTAB!;
         }
@@ -603,10 +583,7 @@ class AuthViewModel extends ChangeNotifier {
     bool admin = selectedUser!.USRTYPE == 2;
     return admin
         ? sellSettings!.PRMTARIFDEFAUTAB!
-        : rubriques
-                .where((r) => r.USBTRS == '03' && r.USBTRB == '01' && r.USBDEFAULT == 1)
-                .map((r) => r.USBRUB)
-                .firstOrNull ??
+        : rubriques.where((r) => r.USBTRS == '03' && r.USBTRB == '01' && r.USBDEFAULT == 1).map((r) => r.USBRUB).firstOrNull ??
             sellSettings!.PRMTARIFDEFAUTAB!;
   }
 }

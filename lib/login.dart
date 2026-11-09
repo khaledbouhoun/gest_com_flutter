@@ -75,6 +75,140 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                   ),
                 );
               }
+              if (provider.statusCode == 500) {
+                return Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.08),
+                    child: Container(
+                      width: width * 0.9,
+                      padding: EdgeInsets.all(width * 0.06),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // الأيقونة العلوية
+                          Container(
+                            padding: EdgeInsets.all(width * 0.05),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: const Color(0xFFff6b6b).withValues(alpha: 0.1),
+                            ),
+                            child: Icon(
+                              Icons.cloud_off_rounded,
+                              size: width * 0.15,
+                              color: const Color(0xFFff6b6b),
+                            ),
+                          ),
+                          SizedBox(height: height * 0.025),
+
+                          // العنوان
+                          Text(
+                            'Erreur de connexion',
+                            style: TextStyle(
+                              fontSize: width * 0.05,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF2d3436),
+                            ),
+                          ),
+                          SizedBox(height: height * 0.015),
+
+                          // النص التفصيلي الملون (تم تحسينه بـ const)
+                          Text.rich(
+                            TextSpan(
+                              text: 'Impossible de se connecter. La cause peut être le ',
+                              style: TextStyle(
+                                fontSize: width * 0.038,
+                                color: const Color(0xFF636e72),
+                                height: 1.5,
+                              ),
+                              children: const [
+                                TextSpan(
+                                  text: 'Serveur (Configuration)',
+                                  style: TextStyle(
+                                    color: Color(0xFFe74c3c),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                TextSpan(text: ' ou votre '),
+                                TextSpan(
+                                  text: 'Connexion Internet',
+                                  style: TextStyle(
+                                    color: Color(0xFFe67e22),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: ' interrompue.\n\nVeuillez vérifier ces éléments.',
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: height * 0.03),
+
+                          // زر إعادة المحاولة
+                          ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF14AAF0),
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: width * 0.08,
+                                vertical: width * 0.035,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              elevation: 2,
+                            ),
+                            onPressed: () {
+                              provider.getUsersAndFolders(context);
+                            },
+                            icon: const Icon(Icons.refresh_rounded),
+                            label: Text(
+                              'Réessayer',
+                              style: TextStyle(
+                                fontSize: width * 0.04,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: height * 0.015),
+
+                          // زر تغيير الإعدادات
+                          TextButton.icon(
+                            onPressed: () {
+                              ChangeIPDialog.showChangeDialog(context);
+                            },
+                            icon: Icon(
+                              Icons.settings_ethernet_rounded,
+                              color: const Color(0xFF14AAF0),
+                              size: width * 0.045,
+                            ),
+                            label: Text(
+                              "Changer l'adresse IP et port",
+                              style: TextStyle(
+                                fontSize: width * 0.035,
+                                color: const Color(0xFF14AAF0),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }
 
               return FadeTransition(
                 opacity: _fadeAnimation,
@@ -521,7 +655,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
           } else if (provider.loginStatusCode == 500) {
             Toast(
               context: context,
-              title: 'Impossible de se connecter au serveur',
+              title: 'Impossible de se connecter au serveur. Vérifiez votre serveur',
               style: ToastificationStyle.minimal,
               type: ToastificationType.error,
             );
