@@ -78,128 +78,230 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
               if (provider.statusCode == 500) {
                 return Center(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: width * 0.08),
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.06),
                     child: Container(
                       width: width * 0.9,
-                      padding: EdgeInsets.all(width * 0.06),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: width * 0.065,
+                        vertical: height * 0.035,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(28),
+                        border: Border.all(
+                          color: const Color(0xFFEAEFF5),
+                          width: 1,
+                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.08),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
+                            color: const Color(0xFF263A53).withValues(alpha: 0.07),
+                            blurRadius: 30,
+                            offset: const Offset(0, 12),
                           ),
                         ],
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // الأيقونة العلوية
+                          // Error icon
                           Container(
-                            padding: EdgeInsets.all(width * 0.05),
+                            padding: EdgeInsets.all(width * 0.055),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: const Color(0xFFff6b6b).withValues(alpha: 0.1),
+                              color: const Color(0xFFFFF1F0),
+                              border: Border.all(
+                                color: const Color(0xFFFFDEDB),
+                                width: 1,
+                              ),
                             ),
                             child: Icon(
                               Icons.cloud_off_rounded,
-                              size: width * 0.15,
-                              color: const Color(0xFFff6b6b),
+                              size: width * 0.14,
+                              color: const Color(0xFFE85D5D),
                             ),
                           ),
+
                           SizedBox(height: height * 0.025),
 
-                          // العنوان
+                          // Title
                           Text(
                             'Erreur de connexion',
+                            textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: width * 0.05,
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xFF2d3436),
+                              fontSize: width * 0.052,
+                              fontWeight: FontWeight.w800,
+                              color: const Color(0xFF172B4D),
+                              letterSpacing: -0.6,
                             ),
                           ),
-                          SizedBox(height: height * 0.015),
 
-                          // النص التفصيلي الملون (تم تحسينه بـ const)
-                          Text.rich(
-                            TextSpan(
-                              text: 'Impossible de se connecter. La cause peut être le ',
-                              style: TextStyle(
-                                fontSize: width * 0.038,
-                                color: const Color(0xFF636e72),
-                                height: 1.5,
+                          SizedBox(height: height * 0.012),
+
+                          // Description
+                          Text(
+                            'Impossible de se connecter au serveur. '
+                            'Veuillez vérifier votre connexion et les paramètres suivants :',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: width * 0.036,
+                              color: const Color(0xFF64748B),
+                              height: 1.6,
+                            ),
+                          ),
+
+                          SizedBox(height: height * 0.025),
+
+                          // Possible causes
+                          Container(
+                            padding: EdgeInsets.all(width * 0.04),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8FAFC),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: const Color(0xFFEDF1F5),
                               ),
-                              children: const [
-                                TextSpan(
-                                  text: 'Serveur (Configuration)',
-                                  style: TextStyle(
-                                    color: Color(0xFFe74c3c),
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFFFE8E6),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: const Icon(
+                                        Icons.dns_rounded,
+                                        color: Color(0xFFE45858),
+                                        size: 19,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    const Expanded(
+                                      child: Text(
+                                        'Configuration du (ip + port)',
+                                        style: TextStyle(
+                                          color: Color(0xFF334155),
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                TextSpan(text: ' ou votre '),
-                                TextSpan(
-                                  text: 'Connexion Internet',
-                                  style: TextStyle(
-                                    color: Color(0xFFe67e22),
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                SizedBox(height: height * 0.018),
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFFFF1DF),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: const Icon(
+                                        Icons.wifi_off_rounded,
+                                        color: Color(0xFFE69535),
+                                        size: 19,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    const Expanded(
+                                      child: Text(
+                                        'Connexion Internet/Réseau',
+                                        style: TextStyle(
+                                          color: Color(0xFF334155),
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                TextSpan(
-                                  text: ' interrompue.\n\nVeuillez vérifier ces éléments.',
+                                SizedBox(height: height * 0.018),
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFE6F4FF),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: const Icon(
+                                        Icons.cloud_off_rounded,
+                                        color: Color.fromARGB(255, 53, 136, 230),
+                                        size: 19,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    const Expanded(
+                                      child: Text(
+                                        'Probleme EMS',
+                                        style: TextStyle(
+                                          color: Color(0xFF334155),
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                            textAlign: TextAlign.center,
                           ),
+
                           SizedBox(height: height * 0.03),
 
-                          // زر إعادة المحاولة
-                          ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF14AAF0),
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: width * 0.08,
-                                vertical: width * 0.035,
+                          // Retry button
+                          SizedBox(
+                            width: double.infinity,
+                            height: height * 0.062,
+                            child: ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF14AAF0),
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
                               ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              elevation: 2,
-                            ),
-                            onPressed: () {
-                              provider.getUsersAndFolders(context);
-                            },
-                            icon: const Icon(Icons.refresh_rounded),
-                            label: Text(
-                              'Réessayer',
-                              style: TextStyle(
-                                fontSize: width * 0.04,
-                                fontWeight: FontWeight.bold,
+                              onPressed: () {
+                                provider.getUsersAndFolders(context);
+                              },
+                              icon: const Icon(Icons.refresh_rounded, size: 21),
+                              label: Text(
+                                'Réessayer',
+                                style: TextStyle(
+                                  fontSize: width * 0.04,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                             ),
                           ),
-                          SizedBox(height: height * 0.015),
 
-                          // زر تغيير الإعدادات
+                          SizedBox(height: height * 0.012),
+
+                          // Change server settings
                           TextButton.icon(
                             onPressed: () {
                               ChangeIPDialog.showChangeDialog(context);
                             },
-                            icon: Icon(
-                              Icons.settings_ethernet_rounded,
-                              color: const Color(0xFF14AAF0),
-                              size: width * 0.045,
+                            style: TextButton.styleFrom(
+                              foregroundColor: const Color(0xFF168FC5),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 10,
+                              ),
                             ),
-                            label: Text(
-                              "Changer l'adresse IP et port",
+                            icon: const Icon(
+                              Icons.settings_ethernet_rounded,
+                              size: 19,
+                            ),
+                            label: const Text(
+                              "Modifier l'adresse IP et le port",
                               style: TextStyle(
-                                fontSize: width * 0.035,
-                                color: const Color(0xFF14AAF0),
                                 fontWeight: FontWeight.w600,
+                                fontSize: 13,
                               ),
                             ),
                           ),

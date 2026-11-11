@@ -4,10 +4,12 @@ import 'package:gestion_stock/main.dart';
 import 'package:gestion_stock/view_models/license_view_model.dart';
 import 'package:gestion_stock/widgets/change_ip_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toastification/toastification.dart';
 
 class AskFirst extends StatefulWidget {
-  const AskFirst({super.key});
+  final bool autoOpenConfig;
+  const AskFirst({super.key, this.autoOpenConfig = false});
 
   @override
   State<AskFirst> createState() => _AskFirstState();
@@ -36,6 +38,21 @@ class _AskFirstState extends State<AskFirst> with SingleTickerProviderStateMixin
     ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic));
 
     _animationController.forward();
+
+    _checkAutoOpenConfig();
+  }
+
+  Future<void> _checkAutoOpenConfig() async {
+    final prefs = await SharedPreferences.getInstance();
+    final justActivated = prefs.getBool('just_activated') ?? false;
+    if (widget.autoOpenConfig || justActivated) {
+      await prefs.setBool('just_activated', false);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ChangeIPDialog.showChangeDialog(context);
+        }
+      });
+    }
   }
 
   @override
@@ -128,7 +145,7 @@ class _AskFirstState extends State<AskFirst> with SingleTickerProviderStateMixin
                             ),
                             SizedBox(height: height * 0.02),
                             Text(
-                              "Voulez-vous changer l'adresse IP et le port, ou continuer avec les paramètres actuels?",
+                              "Voulez-vous modifier la configuration du serveur (IP ou URL), ou continuer avec les paramètres actuels?",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: width * 0.038,

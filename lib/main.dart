@@ -124,22 +124,33 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  getIPAddress() async {
+  Future<void> getIPAddress() async {
     var authProvider = Provider.of<AuthViewModel>(context, listen: false);
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? connectionType = prefs.getString('connection_type') ?? 'ip';
+    String? serverUrl = prefs.getString('server_url') ?? '';
     String? ip = prefs.getString('ipaddress');
     String? port = prefs.getString('port');
     if (ip == null || port == null) {
-      ip = '192.168.1.77';
-      port = '8181';
+      ip = '192.168.1.1';
+      port = '8282';
       prefs.setString('ipaddress', ip);
       prefs.setString('port', port);
     }
+    authProvider.connectionType = connectionType;
+    authProvider.serverUrl = serverUrl;
     authProvider.ipaddress = ip;
     authProvider.port = port;
+
+    String toastMessage = (connectionType == 'url' && serverUrl.isNotEmpty)
+        ? 'URL: ${authProvider.baseUrl}'
+        : 'Adresse ip: ${authProvider.ipaddress}\nPort: ${authProvider.port}';
+
+    if (!mounted) return;
+
     Toast(
         context: context,
-        title: 'Adresse ip: ${authProvider.ipaddress}\nPort: ${authProvider.port}',
+        title: toastMessage,
         style: ToastificationStyle.minimal,
         type: ToastificationType.info,
         duration: 4);

@@ -33,7 +33,7 @@ class LocationViewModel extends ChangeNotifier {
       notify();
       http.Response response = await http.post(
           Uri.parse(
-              'http://${authProvider.ipaddress}:${authProvider.port}/pays'),
+              '${authProvider.baseUrl}/pays'),
           body: jsonEncode({'path': authProvider.selectedFolder?.DOSBDD}));
       statusCode = response.statusCode;
 
@@ -57,7 +57,7 @@ class LocationViewModel extends ChangeNotifier {
       notify();
       http.Response response = await http.post(
           Uri.parse(
-              'http://${authProvider.ipaddress}:${authProvider.port}/territoires'),
+              '${authProvider.baseUrl}/territoires'),
           body: jsonEncode({'path': authProvider.selectedFolder?.DOSBDD}));
       statusCode = response.statusCode;
       if (response.statusCode == 200) {
@@ -81,7 +81,7 @@ class LocationViewModel extends ChangeNotifier {
       notify();
       http.Response response = await http.post(
           Uri.parse(
-              'http://${authProvider.ipaddress}:${authProvider.port}/villes'),
+              '${authProvider.baseUrl}/villes'),
           body: jsonEncode({'path': authProvider.selectedFolder?.DOSBDD}));
       statusCode = response.statusCode;
       if (response.statusCode == 200) {

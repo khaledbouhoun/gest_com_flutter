@@ -224,7 +224,7 @@ class ClientViewModel extends ChangeNotifier {
 
       http.Response response;
       response =
-          await http.post(Uri.parse('http://${authProvider.ipaddress}:${authProvider.port}/add_client'), body: jsonEncode(body), headers: headers);
+          await http.post(Uri.parse('${authProvider.baseUrl}/add_client'), body: jsonEncode(body), headers: headers);
       addStatusCode = response.statusCode;
       addButtonVisible = !addButtonVisible;
       notify();
@@ -278,7 +278,7 @@ class ClientViewModel extends ChangeNotifier {
 
       http.Response response;
       response =
-          await http.post(Uri.parse('http://${authProvider.ipaddress}:${authProvider.port}/modify_client'), body: jsonEncode(body), headers: headers);
+          await http.post(Uri.parse('${authProvider.baseUrl}/modify_client'), body: jsonEncode(body), headers: headers);
       modifyStatusCode = response.statusCode;
       modifyButtonVisible = !modifyButtonVisible;
       notify();

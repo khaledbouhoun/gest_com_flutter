@@ -26,7 +26,7 @@ class CommandeDetailViewModel extends ChangeNotifier {
       statusCode = 0;
       http.Response response = await http.post(
         Uri.parse(
-            'http://${authProvider.ipaddress}:${authProvider.port}/selected_commande?date=${DateFormat('yyyy-MM-dd').format(selectedCommande!.cDEDATE!)}&code=${selectedCommande!.cDENO}'),
+            '${authProvider.baseUrl}/selected_commande?date=${DateFormat('yyyy-MM-dd').format(selectedCommande!.cDEDATE!)}&code=${selectedCommande!.cDENO}'),
         body: jsonEncode({'path': authProvider.selectedFolder?.DOSBDD}),
       );
       if (response.statusCode == 200) {

@@ -78,9 +78,12 @@ class _LicenseActivationPageState extends State<LicenseActivationPage> with Sing
       // Delay navigation to show success animation
       Future.delayed(const Duration(seconds: 2), () {
         if (mounted) {
+          viewModel.setActivated(true);
           // Navigate to home or dashboard
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => AskFirst()),
+            MaterialPageRoute(
+              builder: (context) => const AskFirst(autoOpenConfig: true),
+            ),
           );
         }
       });

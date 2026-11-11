@@ -26,7 +26,7 @@ class FactureDetailViewModel extends ChangeNotifier {
     
       http.Response response = await http.post(
           Uri.parse(
-              'http://${authProvider.ipaddress}:${authProvider.port}/selected_facture?date=${DateFormat('yyyy-MM-dd').format(selectedFacture!.FTEDATE)}&code=${selectedFacture!.FTENO}'),
+              '${authProvider.baseUrl}/selected_facture?date=${DateFormat('yyyy-MM-dd').format(selectedFacture!.FTEDATE)}&code=${selectedFacture!.FTENO}'),
           body: jsonEncode({'path': authProvider.selectedFolder?.DOSBDD}));
       if (response.statusCode == 200) {
         dynamic data = jsonDecode(response.body);

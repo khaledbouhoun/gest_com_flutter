@@ -52,7 +52,7 @@ class AddMainInfosPage extends State<AddMainInfos>
     _isFetchingBarcode = true;
     try {
       http.Response response = await http.get(Uri.parse(
-          "http://${auth.ipaddress}:${auth.port}/Code_Bar_Gnr?path=${auth.selectedFolder?.DOSBDD}"));
+          "${auth.baseUrl}/Code_Bar_Gnr?path=${auth.selectedFolder?.DOSBDD}"));
       if (response.statusCode == 200) {
         dynamic data = jsonDecode(response.body);
         barcode.text = data['cab'];

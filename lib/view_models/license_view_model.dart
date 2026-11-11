@@ -36,6 +36,11 @@ class LicenseViewModel extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   bool get isActivated => _isActivated;
 
+  void setActivated(bool value) {
+    _isActivated = value;
+    notify();
+  }
+
   CheckResult checkResult = CheckResult.success;
 
   Future<CheckResult> checkInternet() async {
@@ -214,11 +219,11 @@ class LicenseViewModel extends ChangeNotifier {
       switch (response.statusCode) {
         case 200:
           if (data['success'] == true) {
-            _isActivated = true;
             _licenseKey = key;
 
             final prefs = await SharedPreferences.getInstance();
             await prefs.setBool('is_activated', true);
+            await prefs.setBool('just_activated', true);
             await SecureStorageService.saveUserKey(key);
 
             if (data['license'] != null && data['license']['last_sync_date'] != null) {
